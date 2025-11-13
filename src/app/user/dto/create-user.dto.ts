@@ -16,8 +16,8 @@ export class CreateUserDto {
   email: string;
 
   @IsUrl()
-  avatarUrl: string;
+  avatarUrl?: string;
 
   @IsString()
-  bio: string;
+  bio?: string;
 }
