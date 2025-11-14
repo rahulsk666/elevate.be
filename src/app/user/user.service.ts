@@ -18,10 +18,16 @@ export class UserService {
     return this.userModel.find().exec();
   }
 
-  async findOne(id: string): Promise<User> {
-    const user = await this.userModel.findById(id);
-    if (!user) throw new NotFoundException('User not found');
-    return user;
+  async findOne(id: string): Promise<User | null> {
+    return this.userModel.findById(id).exec();
+  }
+
+  async findByEmail(email: string): Promise<User | null> {
+    return this.userModel
+      .findOne({
+        email,
+      })
+      .exec();
   }
 
   async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<User> {

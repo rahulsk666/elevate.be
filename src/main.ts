@@ -12,7 +12,8 @@ async function bootstrap() {
     .addTag('elevate')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, documentFactory);
+  SwaggerModule.setup('swagger', app, documentFactory);
+  app.setGlobalPrefix('api');
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
