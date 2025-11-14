@@ -7,12 +7,10 @@ import {
   Patch,
   Post,
   Req,
-  UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth/jwt-auth.guard';
 import type { RequestWithUser } from 'src/types/user.types';
 
 @Controller('user')
@@ -28,7 +26,6 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('profile')
   async getProfile(@Req() req: RequestWithUser) {
     const userId = req.user?.id;

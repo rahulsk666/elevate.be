@@ -9,6 +9,7 @@ import {
 import { AuthService } from './auth.service';
 import { GoogleAuthGuard } from './guards/google-auth/google-auth.guard';
 import type { RequestWithUser } from 'src/types/user.types';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -17,10 +18,12 @@ export class AuthController {
   @Post('logout')
   async logout() {}
 
+  @Public()
   @UseGuards(GoogleAuthGuard)
   @Get('google/login')
   handleGoogleLogin() {}
 
+  @Public()
   @UseGuards(GoogleAuthGuard)
   @Get('google/callback')
   handleGoogleCallback(@Req() req: RequestWithUser) {
