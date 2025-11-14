@@ -21,11 +21,6 @@ export class UserController {
     return this.userService.createUser(createUserDto);
   }
 
-  @Get()
-  async getAllUser() {
-    return this.userService.findAll();
-  }
-
   @Get('profile')
   async getProfile(@Req() req: RequestWithUser) {
     const userId = req.user?.id;
@@ -36,6 +31,11 @@ export class UserController {
   @Get(':id')
   async getUser(@Param('id') id: string) {
     return this.userService.findOne(id);
+  }
+
+  @Get()
+  async getAllUser() {
+    return this.userService.findAll();
   }
 
   @Patch(':id')
