@@ -1,14 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { jwtPayload } from '../../types/jwtPayload.types';
+import refreshJwtConfig from './config/refresh-jwt.config';
+import type { ConfigType } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private jwtService: JwtService,
+    @Inject(refreshJwtConfig.KEY)
+    private readonly refreshTokenConfig: ConfigType<typeof refreshJwtConfig>,
   ) {}
 
   async ValidateGoogleUser(googleUser: CreateUserDto) {
@@ -19,6 +23,24 @@ export class AuthService {
 
   login(userId: string) {
     const payload: jwtPayload = { id: userId };
-    return this.jwtService.sign(payload);
+    const accessToken: string = this.jwtService.sign(payload);
+    const refreshToken: string = this.jwtService.sign(
+      payload,
+      this.refreshTokenConfig,
+    );
+    return {
+      id: userId,
+      accessToken,
+      refreshToken,
+    };
+  }
+
+  refreshToken(userId: string) {
+    const payload: jwtPayload = { id: userId };
+    const accessToken: string = this.jwtService.sign(payload);
+    return {
+      id: userId,
+      accessToken,
+    };
   }
 }

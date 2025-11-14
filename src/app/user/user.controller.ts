@@ -1,13 +1,4 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Req,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Req } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -24,7 +15,6 @@ export class UserController {
   @Get('profile')
   async getProfile(@Req() req: RequestWithUser) {
     const userId = req.user?.id;
-    if (!userId) throw new BadRequestException('User id missing in token');
     return this.userService.findOne(userId);
   }
 

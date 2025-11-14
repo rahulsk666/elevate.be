@@ -1,15 +1,9 @@
-import {
-  BadRequestException,
-  Controller,
-  Get,
-  Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { GoogleAuthGuard } from './guards/google-auth/google-auth.guard';
 import type { RequestWithUser } from 'src/types/user.types';
 import { Public } from 'src/common/decorators/public.decorator';
+import { RefreshJwtAuthGuard } from './guards/refresh-jwt-auth/refresh-jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -27,11 +21,13 @@ export class AuthController {
   @UseGuards(GoogleAuthGuard)
   @Get('google/callback')
   handleGoogleCallback(@Req() req: RequestWithUser) {
-    const userId = req.user?.id;
-    if (!userId) {
-      throw new BadRequestException('user id missing in token');
-    }
-    const token: string = this.authService.login(userId);
-    return { id: userId, token };
+    return this.authService.login(req.user?.id);
+  }
+
+  @Public()
+  @UseGuards(RefreshJwtAuthGuard)
+  @Post('refresh')
+  refreshToken(@Req() req: RequestWithUser) {
+    return this.authService.refreshToken(req.user?.id);
   }
 }

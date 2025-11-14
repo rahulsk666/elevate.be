@@ -10,6 +10,8 @@ import jwtConfig from 'src/app/auth/config/jwt.config';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
+import refreshJwtConfig from './config/refresh-jwt.config';
+import { RefreshJwtStrategy } from './strategies/refresh-jwt.strategy';
 
 @Module({
   imports: [
@@ -17,6 +19,7 @@ import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
     ConfigModule.forFeature(googleOauthConfig),
     JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forFeature(jwtConfig),
+    ConfigModule.forFeature(refreshJwtConfig),
   ],
   controllers: [AuthController],
   providers: [
@@ -27,6 +30,7 @@ import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
     },
+    RefreshJwtStrategy,
   ],
 })
 export class AuthModule {}
