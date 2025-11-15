@@ -15,11 +15,18 @@ export class UserService {
   }
 
   async findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
+    return this.userModel
+      .find()
+      .select('name email bio avatarUrl hashedRefreshToken')
+      .exec();
   }
 
   async findOne(id: string): Promise<User | null> {
-    return this.userModel.findById(id).exec();
+    return this.userModel
+      .findById(id)
+      .select('name email bio avatarUrl hashedRefreshToken')
+      .lean()
+      .exec();
   }
 
   async findByEmail(email: string): Promise<User | null> {
@@ -40,5 +47,14 @@ export class UserService {
     );
     if (!updatedUser) throw new NotFoundException('User not found');
     return updatedUser;
+  }
+
+  async updateHashedRefreshToken(
+    userId: string,
+    hashedRefreshToken: string | null,
+  ) {
+    return await this.userModel.findByIdAndUpdate(userId, {
+      hashedRefreshToken,
+    });
   }
 }

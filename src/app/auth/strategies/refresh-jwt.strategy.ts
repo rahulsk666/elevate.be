@@ -2,8 +2,10 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import type { ConfigType } from '@nestjs/config';
 import { jwtPayload } from '../../../types/jwtPayload.types';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import refreshJwtConfig from '../config/refresh-jwt.config';
+import { Request } from 'express';
+import { AuthService } from '../auth.service';
 
 @Injectable()
 export class RefreshJwtStrategy extends PassportStrategy(
@@ -13,6 +15,7 @@ export class RefreshJwtStrategy extends PassportStrategy(
   constructor(
     @Inject(refreshJwtConfig.KEY)
     private refreshJwtConfiguration: ConfigType<typeof refreshJwtConfig>,
+    private authService: AuthService,
   ) {
     const secret = refreshJwtConfiguration.secret;
     if (!secret || typeof secret !== 'string') {
@@ -24,10 +27,19 @@ export class RefreshJwtStrategy extends PassportStrategy(
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey: secret,
+      passReqToCallback: true,
     });
   }
 
-  validate(payload: jwtPayload) {
-    return { id: payload.id };
+  validate(req: Request, payload: jwtPayload) {
+    const authHeader = req.get('authorization');
+
+    if (!authHeader) {
+      throw new UnauthorizedException('Authorization header missing');
+    }
+
+    const refreshToken = authHeader.replace('Bearer', '').trim();
+    const userId = payload.id;
+    return this.authService.validateHashedRefreshToken(userId, refreshToken);
   }
 }

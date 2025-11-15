@@ -27,6 +27,9 @@ export class User {
 
   @Prop({ default: new Date().toISOString() })
   updatedAt: Date;
+
+  @Prop({ type: String, default: null })
+  hashedRefreshToken: string | null;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

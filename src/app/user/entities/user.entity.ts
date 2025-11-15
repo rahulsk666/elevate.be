@@ -5,4 +5,5 @@ export class UserEntity {
   bio: string;
   readonly createdAt: Date;
   updatedAt: Date;
+  hashedRefreshToken: string | null;
 }

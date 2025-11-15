@@ -20,4 +20,7 @@ export class CreateUserDto {
 
   @IsString()
   bio?: string;
+
+  @IsString()
+  hashedRefreshToken?: string | null;
 }

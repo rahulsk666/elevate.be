@@ -30,4 +30,9 @@ export class AuthController {
   refreshToken(@Req() req: RequestWithUser) {
     return this.authService.refreshToken(req.user?.id);
   }
+
+  @Post('signout')
+  signOut(@Req() req: RequestWithUser) {
+    return this.authService.signOut(req.user.id);
+  }
 }
