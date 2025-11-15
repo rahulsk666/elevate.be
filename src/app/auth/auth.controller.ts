@@ -1,4 +1,11 @@
-import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { GoogleAuthGuard } from './guards/google-auth/google-auth.guard';
 import type { RequestWithUser } from 'src/types/user.types';
@@ -32,7 +39,9 @@ export class AuthController {
   }
 
   @Post('signout')
-  signOut(@Req() req: RequestWithUser) {
-    return this.authService.signOut(req.user.id);
+  @HttpCode(200)
+  async signOut(@Req() req: RequestWithUser) {
+    await this.authService.signOut(req.user.id);
+    return { message: 'Logged out successfully' };
   }
 }

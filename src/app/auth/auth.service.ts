@@ -73,6 +73,6 @@ export class AuthService {
   }
 
   async signOut(userId: string) {
-    return this.userService.updateHashedRefreshToken(userId, null);
+    return await this.userService.updateHashedRefreshToken(userId, null);
   }
 }
