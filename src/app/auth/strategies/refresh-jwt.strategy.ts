@@ -14,8 +14,10 @@ export class RefreshJwtStrategy extends PassportStrategy(
 ) {
   constructor(
     @Inject(refreshJwtConfig.KEY)
-    private refreshJwtConfiguration: ConfigType<typeof refreshJwtConfig>,
-    private authService: AuthService,
+    private readonly refreshJwtConfiguration: ConfigType<
+      typeof refreshJwtConfig
+    >,
+    private readonly authService: AuthService,
   ) {
     const secret = refreshJwtConfiguration.secret;
     if (!secret || typeof secret !== 'string') {

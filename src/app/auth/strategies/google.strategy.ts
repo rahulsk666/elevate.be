@@ -10,8 +10,8 @@ import { User } from 'src/schemas/user.schema';
 export class GoogleStrategy extends PassportStrategy(Strategy) {
   constructor(
     @Inject(googleOauthConfig.KEY)
-    private googleConfiguration: ConfigType<typeof googleOauthConfig>,
-    private authService: AuthService,
+    private readonly googleConfiguration: ConfigType<typeof googleOauthConfig>,
+    private readonly authService: AuthService,
   ) {
     super({
       clientID: googleConfiguration.client_id!,

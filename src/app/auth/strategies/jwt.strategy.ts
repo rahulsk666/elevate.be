@@ -9,7 +9,7 @@ import { Inject, Injectable } from '@nestjs/common';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     @Inject(jwtConfig.KEY)
-    private jwtConfiguration: ConfigType<typeof jwtConfig>,
+    private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
   ) {
     const secret = jwtConfiguration.secret;
     if (!secret || typeof secret !== 'string') {
