@@ -28,11 +28,12 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Patch(':id')
+  @Patch()
   async updateUser(
-    @Param('id') id: string,
+    @Req() req: RequestWithUser,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return this.userService.updateUser(id, updateUserDto);
+    const userId = req.user.id;
+    return this.userService.updateUser(userId, updateUserDto);
   }
 }

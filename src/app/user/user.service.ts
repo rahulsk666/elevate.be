@@ -7,7 +7,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private readonly userModel: Model<User>,
+  ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     const user = new this.userModel(createUserDto);
@@ -37,14 +39,17 @@ export class UserService {
       .exec();
   }
 
-  async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    const updatedUser = await this.userModel.findByIdAndUpdate(
-      id,
-      updateUserDto,
-      {
+  async updateUser(
+    userId: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<User> {
+    const updatedUser = await this.userModel
+      .findByIdAndUpdate(userId, updateUserDto, {
         new: true,
-      },
-    );
+      })
+      .select('name email bio avatarUrl hashedRefreshToken')
+      .lean()
+      .exec();
     if (!updatedUser) throw new NotFoundException('User not found');
     return updatedUser;
   }
