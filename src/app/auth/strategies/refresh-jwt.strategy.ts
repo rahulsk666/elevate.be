@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import type { ConfigType } from '@nestjs/config';
 import { jwtPayload } from '../../../types/jwtPayload.types';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
-import refreshJwtConfig from '../config/refresh-jwt.config';
+import refreshJwtConfig from '../../../config/refresh-jwt.config';
 import { Request } from 'express';
 import { AuthService } from '../auth.service';
 
