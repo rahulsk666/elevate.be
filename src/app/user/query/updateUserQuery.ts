@@ -36,6 +36,8 @@ export function updateUserQuery(
     values.push(user.hashedRefreshToken);
   }
 
+  columns.push(`updated_at = NOW()`);
+
   values.push(id);
 
   const query = `

@@ -3,6 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserPgRepository } from './repository/user.repository';
 import { User } from './entities/user.entity';
+import { mapUser, mapUserArray } from 'src/utils/mapUser';
 
 @Injectable()
 export class UserService {
@@ -10,28 +11,28 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const user = await this.userRepo.create(createUserDto);
-    return user;
+    return mapUser(user);
   }
 
   async findAll(): Promise<User[]> {
-    const user: User[] = await this.userRepo.findAll();
-    return user;
+    const users: User[] = await this.userRepo.findAll();
+    return mapUserArray(users);
   }
 
   async findById(id: string): Promise<User | null> {
     const user = await this.userRepo.findById(id);
     if (!user) throw new NotFoundException(`User not found with ${id}`);
-    return user;
+    return mapUser(user);
   }
 
   async findByEmail(email: string): Promise<User | null> {
     const user = await this.userRepo.findByEmail(email);
-    return user;
+    return mapUser(user);
   }
 
   async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.userRepo.update(id, updateUserDto);
-    return user;
+    return mapUser(user);
   }
 
   async updateHashedRefreshToken(
