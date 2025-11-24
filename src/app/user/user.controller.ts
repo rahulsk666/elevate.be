@@ -17,12 +17,12 @@ export class UserController {
   @Get('profile')
   async getProfile(@Req() req: RequestWithUser) {
     const userId = req.user?.id;
-    return this.userService.findOne(userId);
+    return this.userService.findById(userId);
   }
 
   @Get(':id')
   async getUser(@Param('id') id: string) {
-    return this.userService.findOne(id);
+    return this.userService.findById(id);
   }
 
   @Get()

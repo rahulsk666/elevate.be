@@ -1,5 +1,13 @@
 export function selectAllUsersQuery(): string {
-  return `SELECT id, name, email, avatar_url, bio FROM users`;
+  return `SELECT 
+    id, 
+    name, 
+    email, 
+    avatar_url, 
+    bio,
+    created_at AS "createdAt",
+    updated_at AS "updatedAt"
+    FROM users`;
 }
 
 export function selectUserByConditionQuery(
@@ -10,8 +18,18 @@ export function selectUserByConditionQuery(
   values: unknown[];
 } {
   const values: unknown[] = [];
-  const query = `SELECT id, name, email, avatar_url, bio FROM users WHERE $1=$2`;
-  values.push(paramName);
+  const query = `
+    SELECT 
+    id, 
+    name, 
+    email, 
+    avatar_url, 
+    bio,
+    refresh_token AS "hashedRefreshToken",
+    created_at AS "createdAt",
+    updated_at AS "updatedAt" 
+    FROM users 
+    WHERE ${paramName}=$1`;
   values.push(param);
   return { query, values };
 }

@@ -5,11 +5,11 @@ export async function up(knex: Knex): Promise<void> {
   await knex.raw(
     `CREATE TABLE IF NOT EXISTS users(
       id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-      name VARCHAR(255) NOT NULL,
-      email VARCHAR(255) NOT NULL,
-      avatar_url VARCHAR(255),
+      name TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      avatar_url TEXT,
       bio TEXT,
-      refresh_token BOOLEAN NOT NULL DEFAULT FALSE,
+      refresh_token TEXT DEFAULT NULL,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), 
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
     `,

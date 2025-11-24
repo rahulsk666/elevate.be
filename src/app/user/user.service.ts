@@ -18,7 +18,7 @@ export class UserService {
     return user;
   }
 
-  async findOne(id: string): Promise<User | null> {
+  async findById(id: string): Promise<User | null> {
     const user = await this.userRepo.findById(id);
     return user;
   }
@@ -29,7 +29,7 @@ export class UserService {
   }
 
   async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    const user = await this.updateUser(id, updateUserDto);
+    const user = await this.userRepo.update(id, updateUserDto);
     return user;
   }
 

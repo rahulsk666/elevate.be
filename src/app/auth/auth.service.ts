@@ -58,7 +58,7 @@ export class AuthService {
   }
 
   async validateHashedRefreshToken(userId: string, refreshToken: string) {
-    const user = await this.userService.findOne(userId);
+    const user = await this.userService.findById(userId);
     if (!user || !user.hashedRefreshToken) {
       throw new UnauthorizedException('Invalid refresh token');
     }

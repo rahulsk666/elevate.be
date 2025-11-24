@@ -42,6 +42,9 @@ export function createUserQuery(user: CreateUserDto): {
   const query = `
   INSERT INTO users(${columns.join(', ')}) 
   VALUES (${placeholders.join(', ')}) 
+  ON CONFLICT (email) 
+  DO UPDATE SET
+  refresh_token = EXCLUDED.refresh_token
   RETURNING id,
     name, 
     email, 
