@@ -1,6 +1,6 @@
 import { UUID } from 'crypto';
 
-export class UserEntity {
+export class User {
   id: UUID;
   name: string;
   email: string;
