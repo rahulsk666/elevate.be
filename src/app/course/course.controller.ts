@@ -6,12 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { CourseService } from './course.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
-import { IdParamDto } from './dto/find-param.dto';
+import { FindParamDto } from './dto/find-param.dto';
 import { User } from 'src/common/decorators/user.decorator';
+import { IdParamDto } from './dto/id-param.dto';
 
 @Controller('course')
 export class CourseController {
@@ -23,13 +25,18 @@ export class CourseController {
   }
 
   @Get()
+  findByCondition(@Query() condition: FindParamDto) {
+    return this.courseService.findByCondition(condition);
+  }
+
+  @Get()
   findAll() {
     return this.courseService.findAll();
   }
 
   @Get(':id')
   findOne(@Param() param: IdParamDto) {
-    const condition = { param };
+    const condition = { id: param.id };
     return this.courseService.findByCondition(condition);
   }
 
