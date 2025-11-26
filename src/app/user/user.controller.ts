@@ -6,14 +6,13 @@ import {
   Param,
   Patch,
   Post,
-  Req,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import type { RequestWithUser } from 'src/types/user.types';
-import { User } from './entities/user.entity';
 import { IdParamDto } from './dto/id-param.dto';
+import { User as UserDecorator } from 'src/common/decorators/user.decorator';
+import { User } from './entities/user.entity';
 
 @Controller('user')
 export class UserController {
@@ -25,8 +24,7 @@ export class UserController {
   }
 
   @Get('profile')
-  async getProfile(@Req() req: RequestWithUser) {
-    const userId = req.user?.id;
+  async getProfile(@UserDecorator('id') userId: string) {
     return this.userService.findById(userId);
   }
 
@@ -46,10 +44,9 @@ export class UserController {
 
   @Patch()
   async updateUser(
-    @Req() req: RequestWithUser,
+    @UserDecorator('id') userId: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    const userId = req.user.id;
     return this.userService.updateUser(userId, updateUserDto);
   }
 }

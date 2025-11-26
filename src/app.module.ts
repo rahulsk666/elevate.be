@@ -5,6 +5,7 @@ import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './app/auth/auth.module';
 import databaseConfig from './config/database.config';
 import { APP_PIPE } from '@nestjs/core';
+import { CourseModule } from './app/course/course.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { APP_PIPE } from '@nestjs/core';
     DatabaseModule,
     UserModule,
     AuthModule,
+    CourseModule,
   ],
   controllers: [],
   providers: [
