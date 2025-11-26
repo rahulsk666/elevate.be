@@ -5,3 +5,14 @@ export type RequestWithUser = Request & {
   accesstoken?: string;
   refreshtoken?: string;
 };
+
+export type UserRow = {
+  id: string;
+  name: string | null;
+  email: string | null;
+  avatar_url: string | null;
+  bio: string | null;
+  refresh_token: string | null;
+  created_at: string;
+  updated_at: string;
+};

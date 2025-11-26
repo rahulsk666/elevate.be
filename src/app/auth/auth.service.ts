@@ -19,7 +19,7 @@ export class AuthService {
   async ValidateGoogleUser(googleUser: CreateUserDto) {
     const user = await this.userService.findByEmail(googleUser.email);
     if (user) return user;
-    return this.userService.createUser(googleUser);
+    return this.userService.create(googleUser);
   }
 
   async login(userId: string) {
@@ -58,7 +58,7 @@ export class AuthService {
   }
 
   async validateHashedRefreshToken(userId: string, refreshToken: string) {
-    const user = await this.userService.findOne(userId);
+    const user = await this.userService.findById(userId);
     if (!user || !user.hashedRefreshToken) {
       throw new UnauthorizedException('Invalid refresh token');
     }
