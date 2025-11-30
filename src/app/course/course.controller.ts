@@ -24,6 +24,11 @@ export class CourseController {
     return this.courseService.create(createCourseDto, userId);
   }
 
+  @Get(':id')
+  findOne(@Param() param: IdParamDto) {
+    return this.courseService.findById(param.id);
+  }
+
   @Get()
   findByCondition(@Query() condition: FindParamDto) {
     return this.courseService.findByCondition(condition);
@@ -32,12 +37,6 @@ export class CourseController {
   @Get()
   findAll() {
     return this.courseService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param() param: IdParamDto) {
-    const condition = { id: param.id };
-    return this.courseService.findByCondition(condition);
   }
 
   @Patch(':id')

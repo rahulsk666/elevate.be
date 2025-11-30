@@ -22,6 +22,10 @@ export class CourseService {
     return await this.courseRepo.findAll();
   }
 
+  async findById(id: string) {
+    return await this.courseRepo.findById(id);
+  }
+
   async findByCondition(condition: Record<string, any>) {
     return await this.courseRepo.findByCondition(condition);
   }

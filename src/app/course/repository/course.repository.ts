@@ -6,7 +6,10 @@ import { UpdateCourseDto } from '../dto/update-course.dto';
 import { CreateCourseRecord } from '../types/create-course-record.types';
 import { createCourseQuery } from '../query/createCourseQuery';
 import { plainToInstance } from 'class-transformer';
-import { selectCourseByConditionQuery } from '../query/findCourseQuery';
+import {
+  selectCourseByConditionQuery,
+  selectCourseByIdQuery,
+} from '../query/findCourseQuery';
 import { updateCourseQuery } from '../query/updateCourseQuery';
 import { deleteCouseQuery } from '../query/deleteCourseQuery';
 
@@ -29,6 +32,13 @@ export class CoursePgRepository implements courseRepository {
     const { query, values } = selectCourseByConditionQuery(condition);
     const result = await this.db.runQuery(query, values);
     return plainToInstance(Course, result.rows);
+  }
+
+  async findById(id: string): Promise<Course | null> {
+    const query = selectCourseByIdQuery(id);
+    const result = await this.db.runQuery(query);
+    if (!result.rows[0]) return null;
+    return plainToInstance(Course, result.rows[0]);
   }
 
   async update(id: string, course: UpdateCourseDto): Promise<Course> {

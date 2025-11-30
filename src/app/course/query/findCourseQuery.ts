@@ -41,3 +41,20 @@ export function selectCourseByConditionQuery(
   `;
   return { query, values };
 }
+
+export function selectCourseByIdQuery(id: string): string {
+  const query = `
+    SELECT id,
+    title,
+    subtitle,
+    description, 
+    status,
+    created_by AS "createdBy",
+    thumbnail_url AS "thumbnailUrl",
+    created_at AS "createdAt",
+    updated_at AS "updatedAt"
+    FROM courses
+    WHERE id = ${id};
+  `;
+  return query;
+}
