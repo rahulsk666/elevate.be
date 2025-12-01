@@ -1,16 +1,9 @@
-import {
-  Controller,
-  Get,
-  HttpCode,
-  Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, HttpCode, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { GoogleAuthGuard } from './guards/google-auth/google-auth.guard';
-import type { RequestWithUser } from 'src/types/user.types';
 import { Public } from 'src/common/decorators/public.decorator';
 import { RefreshJwtAuthGuard } from './guards/refresh-jwt-auth/refresh-jwt-auth.guard';
+import { User } from 'src/common/decorators/user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -27,21 +20,21 @@ export class AuthController {
   @Public()
   @UseGuards(GoogleAuthGuard)
   @Get('google/callback')
-  handleGoogleCallback(@Req() req: RequestWithUser) {
-    return this.authService.login(req.user?.id);
+  handleGoogleCallback(@User('id') userId: string) {
+    return this.authService.login(userId);
   }
 
   @Public()
   @UseGuards(RefreshJwtAuthGuard)
   @Post('refresh')
-  refreshToken(@Req() req: RequestWithUser) {
-    return this.authService.refreshToken(req.user?.id);
+  refreshToken(@User('id') userId: string) {
+    return this.authService.refreshToken(userId);
   }
 
   @Post('signout')
   @HttpCode(200)
-  async signOut(@Req() req: RequestWithUser) {
-    await this.authService.signOut(req.user.id);
+  async signOut(@User('id') userId: string) {
+    await this.authService.signOut(userId);
     return { message: 'Logged out successfully' };
   }
 }
