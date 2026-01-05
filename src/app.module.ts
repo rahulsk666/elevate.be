@@ -6,6 +6,7 @@ import { AuthModule } from './app/auth/auth.module';
 import databaseConfig from './config/database.config';
 import { APP_PIPE } from '@nestjs/core';
 import { CourseModule } from './app/course/course.module';
+import { LessonModule } from './app/lesson/lesson.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { CourseModule } from './app/course/course.module';
     UserModule,
     AuthModule,
     CourseModule,
+    LessonModule,
   ],
   controllers: [],
   providers: [
