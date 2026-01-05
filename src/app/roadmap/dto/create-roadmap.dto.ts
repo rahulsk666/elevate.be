@@ -11,7 +11,7 @@ export class CreateRoadmapDto {
 
   @IsString()
   @IsOptional()
-  description?: string | null;
+  description?: string;
 
   @IsString()
   @IsIn(['draft', 'published', 'archived'])
