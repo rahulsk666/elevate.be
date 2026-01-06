@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  Inject,
 } from '@nestjs/common';
 import { CourseService } from './course.service';
 import { CreateCourseDto } from './dto/create-course.dto';
@@ -17,7 +18,7 @@ import { IdParamDto } from './dto/id-param.dto';
 
 @Controller('course')
 export class CourseController {
-  constructor(private readonly courseService: CourseService) {}
+  constructor(@Inject() private readonly courseService: CourseService) {}
 
   @Post()
   create(@Body() createCourseDto: CreateCourseDto, @User('id') userId: string) {

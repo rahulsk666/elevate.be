@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { lessonRepository } from './lesson.interface.repository';
 import { Lesson } from '../entities/lesson.entity';
 import { createLessonQuery } from '../query/createLessonQuery';
@@ -12,11 +12,10 @@ import {
 import { UpdateLessonRecord } from '../types/update-lesson-record.ts';
 import { deleteLessonQuery } from '../query/deleteLessonQuery';
 import { updateLessonQuery } from '../query/updateLessonQuery';
-// import { UpdateLessonDto } from '../dto/update-lesson.dto';
 
 @Injectable()
 export class lessonPgRepository implements lessonRepository {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject() private readonly db: DatabaseService) {}
   async create(lesson: CreateLessonRecord): Promise<Lesson> {
     const { query, values } = createLessonQuery(lesson);
     const result = await this.db.runQuery(query, values);

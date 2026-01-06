@@ -1,5 +1,6 @@
 import {
   ForbiddenException,
+  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -10,7 +11,7 @@ import { UpdateRoadmapDto } from './dto/update-roadmap.dto';
 
 @Injectable()
 export class RoadmapService {
-  constructor(private readonly roadmapRepo: roadmapPgRepository) {}
+  constructor(@Inject() private readonly roadmapRepo: roadmapPgRepository) {}
   async create(createRoadmapDto: CreateRoadmapDto, userId: string) {
     return await this.roadmapRepo.create({
       ...createRoadmapDto,
@@ -37,7 +38,7 @@ export class RoadmapService {
       throw new NotFoundException('roadmap not found');
     }
     if (roadmap.createdBy !== userId) {
-      throw new ForbiddenException('You cannot update this course');
+      throw new ForbiddenException('You cannot update this roadmap');
     }
     return await this.roadmapRepo.update(id, updateRoadmapDto);
   }

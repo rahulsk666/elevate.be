@@ -1,5 +1,6 @@
 import {
   ForbiddenException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -9,7 +10,7 @@ import { CoursePgRepository } from './repository/course.repository';
 
 @Injectable()
 export class CourseService {
-  constructor(private readonly courseRepo: CoursePgRepository) {}
+  constructor(@Inject() private readonly courseRepo: CoursePgRepository) {}
   async create(createCourseDto: CreateCourseDto, userId: string) {
     return await this.courseRepo.create({
       ...createCourseDto,

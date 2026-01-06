@@ -6,7 +6,7 @@ export class CreateLessonDto {
   title: string;
 
   @IsUrl()
-  url?: string;
+  url: string;
 
   @IsString()
   @IsOptional()

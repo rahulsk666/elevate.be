@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  Inject,
   Param,
   Patch,
   Post,
@@ -18,7 +19,7 @@ import { UpdateRoadmapDto } from './dto/update-roadmap.dto';
 
 @Controller('roadmap')
 export class RoadmapController {
-  constructor(private readonly roadmapService: RoadmapService) {}
+  constructor(@Inject() private readonly roadmapService: RoadmapService) {}
   @Post()
   create(
     @Body() createRoadmapDto: CreateRoadmapDto,
