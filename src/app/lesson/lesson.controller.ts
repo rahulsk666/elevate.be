@@ -25,11 +25,6 @@ export class LessonController {
     return this.lessonService.create(createLessonDto, userId);
   }
 
-  @Get(':id')
-  findOne(@Param() param: FindLessonIdDto) {
-    return this.lessonService.findById(param.id);
-  }
-
   @Get('search')
   findByTitle(@Query() query: FindLessonTitleDto) {
     return this.lessonService.findByTitle(query.title);
@@ -38,6 +33,11 @@ export class LessonController {
   @Get()
   findAll() {
     return this.lessonService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param() param: FindLessonIdDto) {
+    return this.lessonService.findById(param.id);
   }
 
   @Patch(':id')

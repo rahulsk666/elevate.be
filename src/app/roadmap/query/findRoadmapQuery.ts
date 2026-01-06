@@ -4,7 +4,7 @@ export function selectAllRoadmap(): string {
     title,
     subtitle,
     description, 
-    roadmap_status,
+    roadmap_status AS "roadmapStatus",
     created_by AS "createdBy",
     created_at AS "createdAt",
     updated_at AS "updatedAt"
@@ -21,7 +21,7 @@ export function selectRoadmapById(id: string): {
     title,
     subtitle,
     description, 
-    roadmap_status,
+    roadmap_status AS "roadmapStatus",
     created_by AS "createdBy",
     created_at AS "createdAt",
     updated_at AS "updatedAt"
@@ -32,7 +32,7 @@ export function selectRoadmapById(id: string): {
   return { query, values };
 }
 
-export function selectRoadmapByTitle(name: string): {
+export function selectRoadmapByTitle(title: string): {
   query: string;
   values: unknown[];
 } {
@@ -41,13 +41,16 @@ export function selectRoadmapByTitle(name: string): {
     title,
     subtitle,
     description, 
-    roadmap_status,
+    roadmap_status AS "roadmapStatus",
     created_by AS "createdBy",
     created_at AS "createdAt",
     updated_at AS "updatedAt"
     FROM roadmaps
-    WHERE title LIKE $1;
+    WHERE title ILIKE $1;
     `;
-  const values = [name];
+
+  const titleString = title ? `%${title}%` : null;
+
+  const values = [titleString];
   return { query, values };
 }

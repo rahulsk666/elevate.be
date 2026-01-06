@@ -26,9 +26,9 @@ export function updateRoadmapQuery(
     values.push(roadmap.description);
   }
 
-  if (roadmap.roadmap_status !== undefined) {
+  if (roadmap.roadmapStatus !== undefined) {
     columns.push(`roadmap_status = $${idx++}`);
-    values.push(roadmap.roadmap_status);
+    values.push(roadmap.roadmapStatus);
   }
 
   columns.push(`updated_at = NOW()`);
@@ -43,7 +43,7 @@ export function updateRoadmapQuery(
       title,
       subtitle,
       description,
-      roadmap_status,
+      roadmap_status AS "roadmapStatus",
       created_at AS "createdAt",
       updated_at AS "updatedAt"
 `;

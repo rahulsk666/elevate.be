@@ -4,5 +4,5 @@ export interface UpdateRoadmapRecord {
   title?: string;
   subtitle?: string;
   description?: string;
-  roadmap_status?: roadmapStatus;
+  roadmapStatus?: roadmapStatus;
 }

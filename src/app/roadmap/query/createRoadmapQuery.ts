@@ -33,10 +33,10 @@ export function createRoadmapQuery(roadmap: CreateRoadmapRecord): {
     values.push(roadmap.createdBy);
   }
 
-  if (roadmap.roadmap_status !== undefined) {
+  if (roadmap.roadmapStatus !== undefined) {
     columns.push(`roadmap_status`);
     placeholders.push(`$${idx++}`);
-    values.push(roadmap.roadmap_status);
+    values.push(roadmap.roadmapStatus);
   }
 
   const query = `
@@ -46,7 +46,7 @@ export function createRoadmapQuery(roadmap: CreateRoadmapRecord): {
     title, 
     subtitle, 
     description, 
-    roadmap_status,
+    roadmap_status AS "roadmapStatus",
     created_by,
     created_at AS "createdAt",
     updated_at AS "updatedAt";

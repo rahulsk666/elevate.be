@@ -46,8 +46,10 @@ export function selectLessonByTitle(title: string): {
     created_at AS "createdAt",
     updated_at AS "updatedAt"
     FROM lessons
-    WHERE title LIKE $1;
+    WHERE title ILIKE $1;
     `;
-  const values = [title];
+
+  const titleString = title ? `%${title}%` : null;
+  const values = [titleString];
   return { query, values };
 }

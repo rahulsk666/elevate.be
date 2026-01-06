@@ -5,5 +5,5 @@ export interface CreateRoadmapRecord {
   subtitle?: string;
   description?: string;
   createdBy: string;
-  roadmap_status: roadmapStatus;
+  roadmapStatus: roadmapStatus;
 }

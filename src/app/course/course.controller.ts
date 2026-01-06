@@ -18,16 +18,11 @@ import { IdParamDto } from './dto/id-param.dto';
 
 @Controller('course')
 export class CourseController {
-  constructor(@Inject() private readonly courseService: CourseService) {}
+  constructor(private readonly courseService: CourseService) {}
 
   @Post()
   create(@Body() createCourseDto: CreateCourseDto, @User('id') userId: string) {
     return this.courseService.create(createCourseDto, userId);
-  }
-
-  @Get(':id')
-  findOne(@Param() param: IdParamDto) {
-    return this.courseService.findById(param.id);
   }
 
   @Get()
@@ -38,6 +33,11 @@ export class CourseController {
   @Get()
   findAll() {
     return this.courseService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param() param: IdParamDto) {
+    return this.courseService.findById(param.id);
   }
 
   @Patch(':id')

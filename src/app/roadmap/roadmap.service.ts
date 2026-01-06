@@ -16,7 +16,7 @@ export class RoadmapService {
     return await this.roadmapRepo.create({
       ...createRoadmapDto,
       createdBy: userId,
-      roadmap_status: createRoadmapDto.roadmap_status ?? 'draft',
+      roadmapStatus: createRoadmapDto.roadmapStatus ?? 'draft',
     });
   }
 
@@ -25,7 +25,11 @@ export class RoadmapService {
   }
 
   async findById(id: string) {
-    return await this.roadmapRepo.findById(id);
+    const roadmap = await this.roadmapRepo.findById(id);
+    if (!roadmap) {
+      throw new NotFoundException('Roadmap not found');
+    }
+    return roadmap;
   }
 
   async findByTitle(title: string) {
@@ -35,7 +39,7 @@ export class RoadmapService {
   async update(id: string, updateRoadmapDto: UpdateRoadmapDto, userId: string) {
     const roadmap = await this.roadmapRepo.findById(id);
     if (!roadmap) {
-      throw new NotFoundException('roadmap not found');
+      throw new NotFoundException('Roadmap not found');
     }
     if (roadmap.createdBy !== userId) {
       throw new ForbiddenException('You cannot update this roadmap');

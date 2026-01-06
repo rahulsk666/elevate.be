@@ -19,18 +19,13 @@ import { UpdateRoadmapDto } from './dto/update-roadmap.dto';
 
 @Controller('roadmap')
 export class RoadmapController {
-  constructor(@Inject() private readonly roadmapService: RoadmapService) {}
+  constructor(private readonly roadmapService: RoadmapService) {}
   @Post()
   create(
     @Body() createRoadmapDto: CreateRoadmapDto,
     @User('id') userId: string,
   ) {
     return this.roadmapService.create(createRoadmapDto, userId);
-  }
-
-  @Get(':id')
-  findOne(@Param() param: FindRoadmapIdDto) {
-    return this.roadmapService.findById(param.id);
   }
 
   @Get('search')
@@ -41,6 +36,11 @@ export class RoadmapController {
   @Get()
   findAll() {
     return this.roadmapService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param() param: FindRoadmapIdDto) {
+    return this.roadmapService.findById(param.id);
   }
 
   @Patch(':id')

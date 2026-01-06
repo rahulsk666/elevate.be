@@ -16,5 +16,5 @@ export class CreateRoadmapDto {
   @IsString()
   @IsIn(['draft', 'published', 'archived'])
   @IsOptional()
-  roadmap_status: roadmapStatus = 'draft';
+  roadmapStatus: roadmapStatus = 'draft';
 }

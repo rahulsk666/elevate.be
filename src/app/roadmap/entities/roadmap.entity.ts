@@ -6,7 +6,7 @@ export class Roadmap {
   subtitle: string;
   description: string;
   createdBy: string;
-  roadmap_status: roadmapStatus;
+  roadmapStatus: roadmapStatus;
   createdAt: Date;
   updatedAt: Date;
 }
