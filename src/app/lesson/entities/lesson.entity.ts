@@ -5,7 +5,7 @@ export class Lesson {
   title: string;
   url: string;
   description: string;
-  lesson_type: lessonType;
+  lessonType: lessonType;
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;

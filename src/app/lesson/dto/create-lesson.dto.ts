@@ -6,15 +6,14 @@ export class CreateLessonDto {
   title: string;
 
   @IsUrl()
-  @IsOptional()
   url?: string;
 
   @IsString()
   @IsOptional()
-  description?: string | null;
+  description?: string;
 
   @IsString()
   @IsIn(['link', 'pdf', 'repo', 'note'])
   @IsOptional()
-  lesson_type: lessonType = 'link';
+  lessonType: lessonType = 'link';
 }
