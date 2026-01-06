@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { lessonRepository } from './lesson.interface.repository';
 import { Lesson } from '../entities/lesson.entity';
 import { createLessonQuery } from '../query/createLessonQuery';
@@ -15,7 +15,7 @@ import { updateLessonQuery } from '../query/updateLessonQuery';
 
 @Injectable()
 export class lessonPgRepository implements lessonRepository {
-  constructor(@Inject() private readonly db: DatabaseService) {}
+  constructor(private readonly db: DatabaseService) {}
   async create(lesson: CreateLessonRecord): Promise<Lesson> {
     const { query, values } = createLessonQuery(lesson);
     const result = await this.db.runQuery(query, values);

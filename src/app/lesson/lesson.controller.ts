@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   HttpCode,
-  Inject,
   Param,
   Patch,
   Post,
@@ -19,7 +18,7 @@ import { UpdateLessonDto } from './dto/update-lesson.dto';
 
 @Controller('lesson')
 export class LessonController {
-  constructor(@Inject() private readonly lessonService: LessonService) {}
+  constructor(private readonly lessonService: LessonService) {}
   @Post()
   create(@Body() createLessonDto: CreateLessonDto, @User('id') userId: string) {
     return this.lessonService.create(createLessonDto, userId);

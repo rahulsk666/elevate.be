@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   Query,
-  Inject,
 } from '@nestjs/common';
 import { CourseService } from './course.service';
 import { CreateCourseDto } from './dto/create-course.dto';

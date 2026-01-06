@@ -1,7 +1,7 @@
 import {
   ForbiddenException,
-  Inject,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateCourseDto } from './dto/create-course.dto';
@@ -10,7 +10,7 @@ import { CoursePgRepository } from './repository/course.repository';
 
 @Injectable()
 export class CourseService {
-  constructor(@Inject() private readonly courseRepo: CoursePgRepository) {}
+  constructor(private readonly courseRepo: CoursePgRepository) {}
   async create(createCourseDto: CreateCourseDto, userId: string) {
     return await this.courseRepo.create({
       ...createCourseDto,
@@ -24,7 +24,10 @@ export class CourseService {
   }
 
   async findById(id: string) {
-    return await this.courseRepo.findById(id);
+    const course = await this.courseRepo.findByCondition({ id });
+    if (!course) {
+      throw new NotFoundException('Course not found');
+    }
   }
 
   async findByCondition(condition: Record<string, any>) {
@@ -33,7 +36,7 @@ export class CourseService {
 
   async update(id: string, updateCourseDto: UpdateCourseDto, userId: string) {
     const course = await this.courseRepo.findByCondition({ id });
-    if (course.length === 0) {
+    if (!course) {
       throw new NotFoundException('Course not found');
     }
     if (course[0].createdBy !== userId) {
@@ -43,17 +46,17 @@ export class CourseService {
   }
 
   async delete(id: string, userId: string) {
-    const course = await this.courseRepo.findByCondition({ id });
-
-    if (course.length === 0) {
+    const course = await this.courseRepo.findById(id);
+    if (!course) {
       throw new NotFoundException('Course not found');
     }
-
-    if (course[0].createdBy !== userId) {
+    if (course.createdBy !== userId) {
       throw new ForbiddenException('You cannot delete this course');
     }
-    await this.courseRepo.delete(id);
+    const deleted = await this.courseRepo.delete(id);
 
-    return { message: 'Course deleted successfully' };
+    if (!deleted) {
+      throw new InternalServerErrorException('Failed to delete lesson');
+    }
   }
 }

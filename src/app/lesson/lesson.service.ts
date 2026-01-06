@@ -1,6 +1,5 @@
 import {
   ForbiddenException,
-  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -11,7 +10,7 @@ import { UpdateLessonDto } from './dto/update-lesson.dto';
 
 @Injectable()
 export class LessonService {
-  constructor(@Inject() private readonly lessonRepo: lessonPgRepository) {}
+  constructor(private readonly lessonRepo: lessonPgRepository) {}
   async create(createLessonDto: CreateLessonDto, userId: string) {
     return await this.lessonRepo.create({
       ...createLessonDto,
@@ -25,7 +24,10 @@ export class LessonService {
   }
 
   async findById(id: string) {
-    return await this.lessonRepo.findById(id);
+    const lesson = await this.lessonRepo.findById(id);
+    if (!lesson) {
+      throw new NotFoundException('Lesson not found');
+    }
   }
 
   async findByTitle(title: string) {

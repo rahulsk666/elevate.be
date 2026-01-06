@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { roadmapRepository } from './roadmap.interface.repository';
 import { Roadmap } from '../entities/roadmap.entity';
 import { createRoadmapQuery } from '../query/createRoadmapQuery';
@@ -15,7 +15,7 @@ import { deleteRoadmapQuery } from '../query/deleteRoadmapQuery';
 
 @Injectable()
 export class roadmapPgRepository implements roadmapRepository {
-  constructor(@Inject() private readonly db: DatabaseService) {}
+  constructor(private readonly db: DatabaseService) {}
   async create(roadmap: CreateRoadmapRecord): Promise<Roadmap> {
     const { query, values } = createRoadmapQuery(roadmap);
     const result = await this.db.runQuery(query, values);

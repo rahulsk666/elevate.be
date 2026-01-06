@@ -1,6 +1,5 @@
 import {
   ForbiddenException,
-  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -11,7 +10,7 @@ import { UpdateRoadmapDto } from './dto/update-roadmap.dto';
 
 @Injectable()
 export class RoadmapService {
-  constructor(@Inject() private readonly roadmapRepo: roadmapPgRepository) {}
+  constructor(private readonly roadmapRepo: roadmapPgRepository) {}
   async create(createRoadmapDto: CreateRoadmapDto, userId: string) {
     return await this.roadmapRepo.create({
       ...createRoadmapDto,
