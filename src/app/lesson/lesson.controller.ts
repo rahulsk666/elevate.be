@@ -5,7 +5,6 @@ import {
   Get,
   HttpCode,
   Inject,
-  Logger,
   Param,
   Patch,
   Post,
@@ -53,7 +52,6 @@ export class LessonController {
   @Delete(':id')
   @HttpCode(204)
   remove(@Param('id') id: string, @User('id') userId: string): Promise<void> {
-    Logger.log(id, 'Delete id');
     return this.lessonService.delete(id, userId);
   }
 }

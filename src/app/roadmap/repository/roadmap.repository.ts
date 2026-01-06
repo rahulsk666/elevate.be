@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { roadmapRepository } from './roadmap.interface.repository';
 import { Roadmap } from '../entities/roadmap.entity';
 import { createRoadmapQuery } from '../query/createRoadmapQuery';
@@ -37,7 +37,6 @@ export class roadmapPgRepository implements roadmapRepository {
   async findById(id: string): Promise<Roadmap | null> {
     const { query, values } = selectRoadmapById(id);
     const result = await this.db.runQuery(query, values);
-    Logger.log(result.rows[0], 'Roadmap by id');
     return result.rows[0] as Roadmap;
   }
 
