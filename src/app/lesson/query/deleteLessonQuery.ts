@@ -3,7 +3,7 @@ export function deleteLessonQuery(id: string): {
   values: unknown[];
 } {
   const query = `
-  DELETE FROM lesson WHERE id = $1
+  DELETE FROM lessons WHERE id = $1
   `;
   const values = [id];
   return { query, values };
