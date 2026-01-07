@@ -7,6 +7,7 @@ import { createCourseQuery } from '../query/createCourseQuery';
 import {
   selectCourseByConditionQuery,
   selectCourseByIdQuery,
+  selectCourseByTitleQuery,
 } from '../query/findCourseQuery';
 import { updateCourseQuery } from '../query/updateCourseQuery';
 import { deleteCouseQuery } from '../query/deleteCourseQuery';
@@ -29,6 +30,12 @@ export class CoursePgRepository implements courseRepository {
 
   async findByCondition(condition: Record<string, any>): Promise<Course[]> {
     const { query, values } = selectCourseByConditionQuery(condition);
+    const result = await this.db.runQuery(query, values);
+    return result.rows as Course[];
+  }
+
+  async findByTitle(title: string): Promise<Course[]> {
+    const { query, values } = selectCourseByTitleQuery(title);
     const result = await this.db.runQuery(query, values);
     return result.rows as Course[];
   }

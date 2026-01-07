@@ -24,10 +24,14 @@ export class CourseService {
   }
 
   async findById(id: string) {
-    const course = await this.courseRepo.findByCondition({ id });
+    const course = await this.courseRepo.findById(id);
     if (!course) {
       throw new NotFoundException('Course not found');
     }
+  }
+
+  async findByTitle(title: string) {
+    return await this.courseRepo.findByTitle(title);
   }
 
   async findByCondition(condition: Record<string, any>) {

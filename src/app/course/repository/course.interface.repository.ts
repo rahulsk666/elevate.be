@@ -8,6 +8,7 @@ export interface courseRepository {
   create(course: CreateCourseRecord): Promise<Course>;
   findAll(): Promise<Course[]>;
   findByCondition(condition: Record<string, any>): Promise<Course[]>;
+  findByTitle(title: string): Promise<Course[]>;
   findById(id: string): Promise<Course | null>;
   update(id: string, course: UpdateCourseRecord): Promise<Course>;
   delete(id: string): Promise<boolean>;
