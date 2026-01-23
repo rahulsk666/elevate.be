@@ -7,15 +7,15 @@ export class CreateCourseDto {
 
   @IsString()
   @IsOptional()
-  subtitle?: string | null;
+  subtitle?: string;
 
   @IsString()
   @IsOptional()
-  description?: string | null;
+  description?: string;
 
   @IsUrl()
   @IsOptional()
-  thumbnailUrl?: string | null;
+  thumbnailUrl?: string;
 
   @IsString()
   @IsIn(['draft', 'published', 'archived'])

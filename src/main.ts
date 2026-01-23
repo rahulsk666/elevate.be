@@ -10,7 +10,6 @@ async function bootstrap() {
     .setTitle('Elevate')
     .setDescription('Elevate API description')
     .setVersion('1.0')
-    .addTag('elevate')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, documentFactory);

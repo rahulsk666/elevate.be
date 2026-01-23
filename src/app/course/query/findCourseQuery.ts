@@ -58,3 +58,25 @@ export function selectCourseByIdQuery(id: string): string {
   `;
   return query;
 }
+
+export function selectCourseByTitleQuery(title: string): {
+  query: string;
+  values: unknown[];
+} {
+  const query = `
+    SELECT id,
+    title,
+    subtitle,
+    description, 
+    status,
+    created_by AS "createdBy",
+    thumbnail_url AS "thumbnailUrl",
+    created_at AS "createdAt",
+    updated_at AS "updatedAt"
+    FROM courses
+    WHERE title ILIKE $1 ;
+  `;
+  const titleString = title ? `%${title}%` : [];
+  const values = [titleString];
+  return { query, values };
+}

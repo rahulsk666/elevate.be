@@ -1,13 +1,12 @@
-import { courseStatus } from '../types/course-status.types';
+import { roadmapStatus } from '../types/roadmap-status.types';
 
-export class Course {
+export class Roadmap {
   id: string;
   title: string;
   subtitle: string;
   description: string;
   createdBy: string;
-  thumbnailUrl: string;
-  status: courseStatus;
+  roadmapStatus: roadmapStatus;
   createdAt: Date;
   updatedAt: Date;
 }
