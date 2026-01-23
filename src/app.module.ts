@@ -8,11 +8,14 @@ import { APP_PIPE } from '@nestjs/core';
 import { CourseModule } from './app/course/course.module';
 import { RoadmapModule } from './app/roadmap/roadmap.module';
 import { LessonModule } from './app/lesson/lesson.module';
+import jwtConfig from './config/jwt.config';
+import googleOauthConfig from './config/google-oauth.config';
+import refreshJwtConfig from './config/refresh-jwt.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [databaseConfig],
+      load: [databaseConfig, googleOauthConfig,jwtConfig,refreshJwtConfig],
       isGlobal: true,
     }),
     DatabaseModule,

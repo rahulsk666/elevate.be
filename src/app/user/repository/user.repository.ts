@@ -55,9 +55,10 @@ export class UserPgRepository implements UserRepository {
   async updateHashedRefreshToken(
     userId: string,
     hashedRefreshToken: string | null,
-  ): Promise<void> {
+  ): Promise<User> {
     const dto: UpdateUserDto = { hashedRefreshToken };
     const { query, values } = updateUserQuery(userId, dto);
-    await this.db.runQuery(query, values);
+    const result = await this.db.runQuery(query, values);
+    return  result.rows[0] as User;
   }
 }

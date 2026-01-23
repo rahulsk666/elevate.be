@@ -13,5 +13,5 @@ export interface UserRepository {
   updateHashedRefreshToken(
     userId: string,
     hashedRefreshToken: string | null,
-  ): Promise<void>;
+  ): Promise<User>;
 }

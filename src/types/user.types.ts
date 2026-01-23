@@ -16,3 +16,9 @@ export type UserRow = {
   created_at: string;
   updated_at: string;
 };
+
+export type GoogleUser = {
+  name: string;
+  email: string;
+  image: string;
+};
