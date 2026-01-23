@@ -1,6 +1,5 @@
-import { Controller, Get, HttpCode, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { GoogleAuthGuard } from './guards/google-auth/google-auth.guard';
 import { Public } from 'src/common/decorators/public.decorator';
 import { RefreshJwtAuthGuard } from './guards/refresh-jwt-auth/refresh-jwt-auth.guard';
 import { User } from 'src/common/decorators/user.decorator';
@@ -13,15 +12,9 @@ export class AuthController {
   async logout() {}
 
   @Public()
-  @UseGuards(GoogleAuthGuard)
-  @Get('google/login')
-  handleGoogleLogin() {}
-
-  @Public()
-  @UseGuards(GoogleAuthGuard)
-  @Get('google/callback')
-  handleGoogleCallback(@User('id') userId: string) {
-    return this.authService.login(userId);
+  @Post('google/login')
+  handleGoogleLogin(@Body('code') code: string) {
+    return this.authService.googleLogin(code);
   }
 
   @Public()

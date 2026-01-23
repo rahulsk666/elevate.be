@@ -1,22 +1,62 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  UnauthorizedException,
+  Logger,
+} from '@nestjs/common';
 import { UserService } from '../user/user.service';
-import { CreateUserDto } from '../user/dto/create-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { jwtPayload } from '../../types/jwtPayload.types';
 import refreshJwtConfig from '../../config/refresh-jwt.config';
 import type { ConfigType } from '@nestjs/config';
 import * as argon2 from 'argon2';
+import { OAuth2Client } from 'google-auth-library';
+import googleOauthConfig from 'src/config/google-oauth.config';
+import { GoogleUser } from 'src/types/user.types';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+  private googleClient: OAuth2Client;
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     @Inject(refreshJwtConfig.KEY)
     private readonly refreshTokenConfig: ConfigType<typeof refreshJwtConfig>,
-  ) {}
+    @Inject(googleOauthConfig.KEY)
+    private readonly googleClientConfig: ConfigType<typeof googleOauthConfig>,
+  ) {
+    this.googleClient = new OAuth2Client(
+      this.googleClientConfig.client_id,
+      this.googleClientConfig.client_secret,
+      this.googleClientConfig.callback_url,
+    );
+  }
 
-  async ValidateGoogleUser(googleUser: CreateUserDto) {
+  async googleLogin(code: string) {
+    const { tokens } = await this.googleClient.getToken(code);
+
+    if (!tokens.id_token) {
+      throw new UnauthorizedException('No token returned from google');
+    }
+
+    const ticket = await this.googleClient.verifyIdToken({
+      idToken: tokens.id_token,
+      audience: this.googleClientConfig.client_id,
+    });
+    const payload = ticket.getPayload();
+    if (!payload) {
+      throw new UnauthorizedException('Invalid token from google');
+    }
+    const user = await this.ValidateGoogleUser({
+      email: payload.email ?? '',
+      name: payload.name ?? '',
+      image: payload.picture ?? '',
+    });
+    return this.login(user.id);
+  }
+
+  async ValidateGoogleUser(googleUser: GoogleUser) {
     const user = await this.userService.findByEmail(googleUser.email);
     if (user) return user;
     return this.userService.create(googleUser);
@@ -25,9 +65,13 @@ export class AuthService {
   async login(userId: string) {
     const { accessToken, refreshToken } = await this.generateToken(userId);
     const hashedRefreshToken = await argon2.hash(refreshToken);
-    await this.userService.updateHashedRefreshToken(userId, hashedRefreshToken);
+    const user = await this.userService.updateHashedRefreshToken(
+      userId,
+      hashedRefreshToken,
+    );
+    this.logger.log(`User logged in: ${userId}`);
     return {
-      id: userId,
+      user,
       accessToken,
       refreshToken,
     };
@@ -36,9 +80,13 @@ export class AuthService {
   async refreshToken(userId: string) {
     const { accessToken, refreshToken } = await this.generateToken(userId);
     const hashedRefreshToken = await argon2.hash(refreshToken);
-    await this.userService.updateHashedRefreshToken(userId, hashedRefreshToken);
+    const user = await this.userService.updateHashedRefreshToken(
+      userId,
+      hashedRefreshToken,
+    );
+    this.logger.log(`User refreshed token: ${userId}`);
     return {
-      id: userId,
+      user,
       accessToken,
       refreshToken,
     };
@@ -73,6 +121,7 @@ export class AuthService {
   }
 
   async signOut(userId: string) {
+    this.logger.log(`User signed out: ${userId}`);
     return await this.userService.updateHashedRefreshToken(userId, null);
   }
 }
