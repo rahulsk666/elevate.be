@@ -23,6 +23,7 @@
     "migrate:rollback": "npx knex migrate:rollback --knexfile knexfile.ts"
   },
   "dependencies": {
+    "@nestjs/axios": "^4.0.1",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
@@ -32,6 +33,7 @@
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/swagger": "^11.2.1",
     "argon2": "^0.44.0",
+    "axios": "^1.13.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "dotenv": "^17.2.3",
