@@ -59,6 +59,6 @@ export class UserPgRepository implements UserRepository {
     const dto: UpdateUserDto = { hashedRefreshToken };
     const { query, values } = updateUserQuery(userId, dto);
     const result = await this.db.runQuery(query, values);
-    return  result.rows[0] as User;
+    return result.rows[0] as User;
   }
 }
