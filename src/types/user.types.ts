@@ -17,7 +17,7 @@ export type UserRow = {
   updated_at: string;
 };
 
-export type GoogleUser = {
+export type SocialUser = {
   name: string;
   email: string;
   image: string;

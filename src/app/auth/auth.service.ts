@@ -12,7 +12,9 @@ import type { ConfigType } from '@nestjs/config';
 import * as argon2 from 'argon2';
 import { OAuth2Client } from 'google-auth-library';
 import googleOauthConfig from 'src/config/google-oauth.config';
-import { GoogleUser } from 'src/types/user.types';
+import { SocialUser } from 'src/types/user.types';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -21,6 +23,7 @@ export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly http: HttpService,
     @Inject(refreshJwtConfig.KEY)
     private readonly refreshTokenConfig: ConfigType<typeof refreshJwtConfig>,
     @Inject(googleOauthConfig.KEY)
@@ -48,7 +51,7 @@ export class AuthService {
     if (!payload) {
       throw new UnauthorizedException('Invalid token from google');
     }
-    const user = await this.ValidateGoogleUser({
+    const user = await this.ValidateUser({
       email: payload.email ?? '',
       name: payload.name ?? '',
       image: payload.picture ?? '',
@@ -56,10 +59,65 @@ export class AuthService {
     return this.login(user.id);
   }
 
-  async ValidateGoogleUser(googleUser: GoogleUser) {
-    const user = await this.userService.findByEmail(googleUser.email);
+  async githubLogin(code: string) {
+    const tokenRes = await firstValueFrom(
+      this.http.post(
+        'https://github.com/login/oauth/access_token',
+        {
+          client_id: process.env.GITHUB_CLIENT_ID,
+          client_secret: process.env.GITHUB_CLIENT_SECRET,
+          code,
+        },
+        {
+          headers: { Accept: 'application/json' },
+        },
+      ),
+    );
+
+    const githubToken = tokenRes.data?.access_token;
+
+    if (!githubToken) {
+      throw new UnauthorizedException('GitHub token exchange failed');
+    }
+
+    const profileRes = await firstValueFrom(
+      this.http.get('https://api.github.com/user', {
+        headers: {
+          Authorization: `Bearer ${githubToken}`,
+        },
+      }),
+    );
+
+    const emailsRes = await firstValueFrom(
+      this.http.get('https://api.github.com/user/emails', {
+        headers: {
+          Authorization: `Bearer ${githubToken}`,
+        },
+      }),
+    );
+
+    const primaryEmail = emailsRes.data.find(
+      (e: any) => e.primary && e.verified,
+    )?.email;
+
+    if (!primaryEmail) {
+      throw new UnauthorizedException('No verified email found from GitHub');
+    }
+
+    const user = await this.ValidateUser({
+      email: primaryEmail,
+      name: profileRes.data.name ?? profileRes.data.login,
+      image: profileRes.data.avatar_url,
+    });
+
+    return this.login(user.id);
+  }
+
+  async ValidateUser(socialUser: SocialUser) {
+    const user = await this.userService.findByEmail(socialUser.email);
     if (user) return user;
-    return this.userService.create(googleUser);
+    this.logger.log(`User logged in with social: ${socialUser.email}`);
+    return this.userService.create(socialUser);
   }
 
   async login(userId: string) {

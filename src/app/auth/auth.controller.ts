@@ -18,6 +18,12 @@ export class AuthController {
   }
 
   @Public()
+  @Post('github/login')
+  handleGithubLogin(@Body('code') code: string) {
+    return this.authService.githubLogin(code);
+  }
+
+  @Public()
   @UseGuards(RefreshJwtAuthGuard)
   @Post('refresh')
   refreshToken(@User('id') userId: string) {
