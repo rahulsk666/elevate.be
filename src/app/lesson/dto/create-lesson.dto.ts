@@ -1,4 +1,11 @@
-import { IsIn, IsOptional, IsString, IsUrl } from 'class-validator';
+import {
+  IsIn,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+  IsUUID,
+} from 'class-validator';
 import type { lessonType } from '../types/lesson-type.types';
 
 export class CreateLessonDto {
@@ -16,4 +23,8 @@ export class CreateLessonDto {
   @IsIn(['link', 'pdf', 'repo', 'note'])
   @IsOptional()
   lessonType: lessonType = 'link';
+
+  @IsUUID()
+  @IsNotEmpty()
+  roadmap_id: string;
 }

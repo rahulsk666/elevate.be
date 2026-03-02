@@ -1,11 +1,4 @@
-import {
-  IsIn,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  IsUrl,
-  IsUUID,
-} from 'class-validator';
+import { IsIn, IsOptional, IsString, IsUrl } from 'class-validator';
 import type { courseStatus } from '../types/course-status.types';
 
 export class CreateCourseDto {
@@ -28,8 +21,4 @@ export class CreateCourseDto {
   @IsIn(['draft', 'published', 'archived'])
   @IsOptional()
   status: courseStatus = 'draft';
-
-  @IsUUID()
-  @IsNotEmpty()
-  roadmap_id: string;
 }

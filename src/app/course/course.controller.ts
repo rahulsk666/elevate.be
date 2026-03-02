@@ -31,11 +31,6 @@ export class CourseController {
     return this.courseService.findByTitle(query.title);
   }
 
-  // @Get()
-  // findByCondition(@Query() condition: FindParamDto) {
-  //   return this.courseService.findByCondition(condition);
-  // }
-
   @Get()
   findAll() {
     return this.courseService.findAll();

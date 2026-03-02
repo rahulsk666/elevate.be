@@ -1,22 +1,38 @@
 import {
   ForbiddenException,
+  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { roadmapPgRepository } from './repository/roadmap.repository';
 import { CreateRoadmapDto } from './dto/create-roadmap.dto';
 import { UpdateRoadmapDto } from './dto/update-roadmap.dto';
+import {
+  ROADMAP_REPOSITOTY,
+  type roadmapRepository,
+} from './repository/roadmap.interface.repository';
+import {
+  COURSE_ROADMAP_REPOSITOTY,
+  type courseRoadmapRepository,
+} from './repository/course_roadmap.interface.repository';
 
 @Injectable()
 export class RoadmapService {
-  constructor(private readonly roadmapRepo: roadmapPgRepository) {}
+  constructor(
+    @Inject(ROADMAP_REPOSITOTY)
+    private readonly roadmapRepo: roadmapRepository,
+    @Inject(COURSE_ROADMAP_REPOSITOTY)
+    private readonly courseRoadmapRepo: courseRoadmapRepository,
+  ) {}
   async create(createRoadmapDto: CreateRoadmapDto, userId: string) {
-    return await this.roadmapRepo.create({
-      ...createRoadmapDto,
+    const { course_id, ...roadmapData } = createRoadmapDto;
+    const roadmap = await this.roadmapRepo.create({
+      ...roadmapData,
       createdBy: userId,
-      roadmapStatus: createRoadmapDto.roadmapStatus ?? 'draft',
+      roadmapStatus: roadmapData.roadmapStatus ?? 'draft',
     });
+    await this.courseRoadmapRepo.link(course_id, roadmap.id);
+    return roadmap;
   }
 
   async findAll() {

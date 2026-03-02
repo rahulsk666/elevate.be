@@ -2,7 +2,7 @@ import { Lesson } from '../entities/lesson.entity';
 import { CreateLessonRecord } from '../types/create-lessson-record.types';
 import { UpdateLessonRecord } from '../types/update-lesson-record.ts';
 
-export const LESSON_REPOSITOTY = 'LESSON_REPOSITORY';
+export const LESSON_REPOSITORY = 'LESSON_REPOSITORY';
 
 export interface lessonRepository {
   create(lesson: CreateLessonRecord): Promise<Lesson>;

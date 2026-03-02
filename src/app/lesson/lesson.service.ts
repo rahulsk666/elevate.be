@@ -1,22 +1,37 @@
 import {
   ForbiddenException,
+  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { lessonPgRepository } from './repository/lesson.repository';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
+import {
+  LESSON_REPOSITORY,
+  type lessonRepository,
+} from './repository/lesson.interface.repository';
+import {
+  ROADMAP_LESSON_REPOSITORY,
+  type roadmapLessonRepository,
+} from './repository/roadmap_lesson.interface.repository';
 
 @Injectable()
 export class LessonService {
-  constructor(private readonly lessonRepo: lessonPgRepository) {}
+  constructor(
+    @Inject(LESSON_REPOSITORY) private readonly lessonRepo: lessonRepository,
+    @Inject(ROADMAP_LESSON_REPOSITORY)
+    private readonly roadmaplessonRepo: roadmapLessonRepository,
+  ) {}
   async create(createLessonDto: CreateLessonDto, userId: string) {
-    return await this.lessonRepo.create({
-      ...createLessonDto,
+    const { roadmap_id, ...createLessonData } = createLessonDto;
+    const lesson = await this.lessonRepo.create({
+      ...createLessonData,
       createdBy: userId,
-      lessonType: createLessonDto.lessonType ?? 'link',
+      lessonType: createLessonData.lessonType ?? 'link',
     });
+    await this.roadmaplessonRepo.link(roadmap_id, lesson.id);
+    return lesson;
   }
 
   async findAll() {

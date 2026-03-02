@@ -11,27 +11,18 @@ import {
   COURSE_REPOSITORY,
   type CourseRepository,
 } from './repository/course.interface.repository';
-import {
-  COURSE_ROADMAP_REPOSITOTY,
-  type courseRoadmapRepository,
-} from './repository/course_roadmap.interface.repository';
 
 @Injectable()
 export class CourseService {
   constructor(
     @Inject(COURSE_REPOSITORY) private readonly courseRepo: CourseRepository,
-    @Inject(COURSE_ROADMAP_REPOSITOTY)
-    private readonly courseRoadmapRepo: courseRoadmapRepository,
   ) {}
   async create(createCourseDto: CreateCourseDto, userId: string) {
-    const { roadmap_id, ...courseData } = createCourseDto;
-    const course = await this.courseRepo.create({
-      ...courseData,
+    return await this.courseRepo.create({
+      ...createCourseDto,
       createdBy: userId,
       status: createCourseDto.status ?? 'draft',
     });
-    await this.courseRoadmapRepo.link(course.id, roadmap_id);
-    return course;
   }
 
   async findAll() {

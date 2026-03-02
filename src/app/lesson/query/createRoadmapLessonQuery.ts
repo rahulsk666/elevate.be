@@ -1,12 +1,12 @@
-export function createCourseRoadmapQuery(
-  course_id: string,
+export function createRoadmapLessonQuery(
   roadmap_id: string,
+  lesson_id: string,
 ): {
   query: string;
   values: unknown[];
 } {
   const query = `
-    INSERT INTO course_roadmap (course_id, roadmap_id, roadmap_order)
+    INSERT INTO roadmap_lesson (roadmap_id, lesson_id, lesson_order)
     VALUES (
       $1,
       $2,
@@ -15,5 +15,5 @@ export function createCourseRoadmapQuery(
     ON CONFLICT DO NOTHING
   `;
 
-  return { query, values: [course_id, roadmap_id, roadmap_id] };
+  return { query, values: [roadmap_id, lesson_id, roadmap_id] };
 }
