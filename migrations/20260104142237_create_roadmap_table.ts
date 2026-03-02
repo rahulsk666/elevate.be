@@ -8,13 +8,15 @@ export async function up(knex: Knex): Promise<void> {
       title TEXT NOT NULL,
       subtitle TEXT,
       description TEXT,
-      created_by UUID REFERENCES users(id),
-      roadmap_status TEXT NOT NULL DEFAULT 'draft',
+      created_by UUID NOT NULL REFERENCES users(id),
+      roadmap_status TEXT NOT NULL DEFAULT 'draft'
+        CHECK (roadmap_status IN ('draft','published','archived')),
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), 
-      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
     `);
 }
 
 export async function down(knex: Knex): Promise<void> {
-  await knex.raw('DROP TABLE IF EXISTS roadmap');
+  await knex.raw('DROP TABLE IF EXISTS roadmaps');
 }

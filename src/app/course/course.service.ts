@@ -1,22 +1,37 @@
 import {
   ForbiddenException,
+  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
-import { CoursePgRepository } from './repository/course.repository';
+import {
+  COURSE_REPOSITORY,
+  type CourseRepository,
+} from './repository/course.interface.repository';
+import {
+  COURSE_ROADMAP_REPOSITOTY,
+  type courseRoadmapRepository,
+} from './repository/course_roadmap.interface.repository';
 
 @Injectable()
 export class CourseService {
-  constructor(private readonly courseRepo: CoursePgRepository) {}
+  constructor(
+    @Inject(COURSE_REPOSITORY) private readonly courseRepo: CourseRepository,
+    @Inject(COURSE_ROADMAP_REPOSITOTY)
+    private readonly courseRoadmapRepo: courseRoadmapRepository,
+  ) {}
   async create(createCourseDto: CreateCourseDto, userId: string) {
-    return await this.courseRepo.create({
-      ...createCourseDto,
+    const { roadmap_id, ...courseData } = createCourseDto;
+    const course = await this.courseRepo.create({
+      ...courseData,
       createdBy: userId,
       status: createCourseDto.status ?? 'draft',
     });
+    await this.courseRoadmapRepo.link(course.id, roadmap_id);
+    return course;
   }
 
   async findAll() {
@@ -28,6 +43,7 @@ export class CourseService {
     if (!course) {
       throw new NotFoundException('Course not found');
     }
+    return course;
   }
 
   async findByTitle(title: string) {
@@ -39,11 +55,11 @@ export class CourseService {
   }
 
   async update(id: string, updateCourseDto: UpdateCourseDto, userId: string) {
-    const course = await this.courseRepo.findByCondition({ id });
+    const course = await this.courseRepo.findById(id);
     if (!course) {
       throw new NotFoundException('Course not found');
     }
-    if (course[0].createdBy !== userId) {
+    if (course.createdBy !== userId) {
       throw new ForbiddenException('You cannot update this course');
     }
     return await this.courseRepo.update(id, updateCourseDto);

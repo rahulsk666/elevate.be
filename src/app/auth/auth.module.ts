@@ -12,12 +12,14 @@ import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 import refreshJwtConfig from '../../config/refresh-jwt.config';
 import { RefreshJwtStrategy } from './strategies/refresh-jwt.strategy';
 import { HttpModule } from '@nestjs/axios';
+import githubOauthConfig from 'src/config/github-oauth.config';
 
 @Module({
   imports: [
     HttpModule,
     UserModule,
     ConfigModule.forFeature(googleOauthConfig),
+    ConfigModule.forFeature(githubOauthConfig),
     JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forFeature(jwtConfig),
     ConfigModule.forFeature(refreshJwtConfig),

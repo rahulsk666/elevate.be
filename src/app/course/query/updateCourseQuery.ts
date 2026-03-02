@@ -50,6 +50,7 @@ export function updateCourseQuery(
       thumbnail_url as "thumbnailUrl",
       description,
       status,
+      created_by AS "createdBy",
       created_at AS "createdAt",
       updated_at AS "updatedAt"
 `;

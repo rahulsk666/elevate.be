@@ -11,11 +11,18 @@ import { LessonModule } from './app/lesson/lesson.module';
 import jwtConfig from './config/jwt.config';
 import googleOauthConfig from './config/google-oauth.config';
 import refreshJwtConfig from './config/refresh-jwt.config';
+import githubOauthConfig from './config/github-oauth.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [databaseConfig, googleOauthConfig,jwtConfig,refreshJwtConfig],
+      load: [
+        databaseConfig,
+        googleOauthConfig,
+        githubOauthConfig,
+        jwtConfig,
+        refreshJwtConfig,
+      ],
       isGlobal: true,
     }),
     DatabaseModule,

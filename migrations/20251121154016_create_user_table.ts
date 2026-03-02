@@ -11,7 +11,8 @@ export async function up(knex: Knex): Promise<void> {
       bio TEXT,
       refresh_token TEXT DEFAULT NULL,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), 
-      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
     `,
   );
 }

@@ -5,9 +5,11 @@ export async function up(knex: Knex): Promise<void> {
     CREATE TABLE IF NOT EXISTS roadmap_lesson(
         roadmap_id UUID NOT NULL REFERENCES roadmaps(id) ON DELETE CASCADE,
         lesson_id UUID NOT NULL REFERENCES lessons(id) ON DELETE CASCADE,
-        lesson_order INT,
-        PRIMARY KEY (roadmap_id,lesson_id)
-    );
+        lesson_order INT NOT NULL,
+        created_at TIMESTAMP DEFAULT now(),
+        PRIMARY KEY (roadmap_id,lesson_id),
+        UNIQUE (roadmap_id, lesson_order)
+      );
     `);
 }
 

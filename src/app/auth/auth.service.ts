@@ -15,6 +15,12 @@ import googleOauthConfig from 'src/config/google-oauth.config';
 import { SocialUser } from 'src/types/user.types';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
+import githubOauthConfig from 'src/config/github-oauth.config';
+import {
+  GithubEmail,
+  GithubProfile,
+  GithubTokenResponse,
+} from 'src/types/github.types';
 
 @Injectable()
 export class AuthService {
@@ -28,6 +34,8 @@ export class AuthService {
     private readonly refreshTokenConfig: ConfigType<typeof refreshJwtConfig>,
     @Inject(googleOauthConfig.KEY)
     private readonly googleClientConfig: ConfigType<typeof googleOauthConfig>,
+    @Inject(githubOauthConfig.KEY)
+    private readonly githubClientConfig: ConfigType<typeof githubOauthConfig>,
   ) {
     this.googleClient = new OAuth2Client(
       this.googleClientConfig.client_id,
@@ -61,11 +69,11 @@ export class AuthService {
 
   async githubLogin(code: string) {
     const tokenRes = await firstValueFrom(
-      this.http.post(
+      this.http.post<GithubTokenResponse>(
         'https://github.com/login/oauth/access_token',
         {
-          client_id: process.env.GITHUB_CLIENT_ID,
-          client_secret: process.env.GITHUB_CLIENT_SECRET,
+          client_id: this.githubClientConfig.client_id,
+          client_secret: this.githubClientConfig.client_secret,
           code,
         },
         {
@@ -81,7 +89,7 @@ export class AuthService {
     }
 
     const profileRes = await firstValueFrom(
-      this.http.get('https://api.github.com/user', {
+      this.http.get<GithubProfile>('https://api.github.com/user', {
         headers: {
           Authorization: `Bearer ${githubToken}`,
         },
@@ -89,7 +97,7 @@ export class AuthService {
     );
 
     const emailsRes = await firstValueFrom(
-      this.http.get('https://api.github.com/user/emails', {
+      this.http.get<GithubEmail[]>('https://api.github.com/user/emails', {
         headers: {
           Authorization: `Bearer ${githubToken}`,
         },
@@ -97,7 +105,7 @@ export class AuthService {
     );
 
     const primaryEmail = emailsRes.data.find(
-      (e: any) => e.primary && e.verified,
+      (e) => e.primary && e.verified,
     )?.email;
 
     if (!primaryEmail) {
@@ -128,6 +136,9 @@ export class AuthService {
       hashedRefreshToken,
     );
     this.logger.log(`User logged in: ${userId}`);
+    this.logger.log(`Token: ${accessToken}`);
+    this.logger.log(`Refresh Token: ${refreshToken}`);
+
     return {
       user,
       accessToken,
