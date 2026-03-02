@@ -31,7 +31,11 @@ export class DatabaseService {
   async runQuery<T extends QueryResultRow = any>(
     query: string,
     params?: unknown[],
+    client?: PoolClient,
   ): Promise<QueryResult<T>> {
+    if (client) {
+      return client.query<T>(query, params);
+    }
     return this.pool.query<T>(query, params);
   }
 

@@ -15,6 +15,7 @@ import {
   ROADMAP_LESSON_REPOSITORY,
   type roadmapLessonRepository,
 } from './repository/roadmap_lesson.interface.repository';
+import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class LessonService {
@@ -22,16 +23,22 @@ export class LessonService {
     @Inject(LESSON_REPOSITORY) private readonly lessonRepo: lessonRepository,
     @Inject(ROADMAP_LESSON_REPOSITORY)
     private readonly roadmaplessonRepo: roadmapLessonRepository,
+    private readonly db: DatabaseService,
   ) {}
   async create(createLessonDto: CreateLessonDto, userId: string) {
     const { roadmap_id, ...createLessonData } = createLessonDto;
-    const lesson = await this.lessonRepo.create({
-      ...createLessonData,
-      createdBy: userId,
-      lessonType: createLessonData.lessonType ?? 'link',
+    return await this.db.runInTransaction(async (client) => {
+      const lesson = await this.lessonRepo.create(
+        {
+          ...createLessonData,
+          createdBy: userId,
+          lessonType: createLessonData.lessonType ?? 'link',
+        },
+        client,
+      );
+      await this.roadmaplessonRepo.link(roadmap_id, lesson.id, client);
+      return lesson;
     });
-    await this.roadmaplessonRepo.link(roadmap_id, lesson.id);
-    return lesson;
   }
 
   async findAll() {

@@ -15,6 +15,7 @@ import {
   COURSE_ROADMAP_REPOSITOTY,
   type courseRoadmapRepository,
 } from './repository/course_roadmap.interface.repository';
+import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class RoadmapService {
@@ -23,16 +24,22 @@ export class RoadmapService {
     private readonly roadmapRepo: roadmapRepository,
     @Inject(COURSE_ROADMAP_REPOSITOTY)
     private readonly courseRoadmapRepo: courseRoadmapRepository,
+    private readonly db: DatabaseService,
   ) {}
   async create(createRoadmapDto: CreateRoadmapDto, userId: string) {
     const { course_id, ...roadmapData } = createRoadmapDto;
-    const roadmap = await this.roadmapRepo.create({
-      ...roadmapData,
-      createdBy: userId,
-      roadmapStatus: roadmapData.roadmapStatus ?? 'draft',
+    return await this.db.runInTransaction(async (client) => {
+      const roadmap = await this.roadmapRepo.create(
+        {
+          ...roadmapData,
+          createdBy: userId,
+          roadmapStatus: roadmapData.roadmapStatus ?? 'draft',
+        },
+        client,
+      );
+      await this.courseRoadmapRepo.link(course_id, roadmap.id, client);
+      return roadmap;
     });
-    await this.courseRoadmapRepo.link(course_id, roadmap.id);
-    return roadmap;
   }
 
   async findAll() {
