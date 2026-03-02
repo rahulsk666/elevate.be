@@ -6,5 +6,5 @@ export interface CreateCourseRecord {
   description?: string;
   thumbnailUrl?: string;
   status?: courseStatus;
-  createdBy: string; // <-- REQUIRED for DB insert
+  createdBy: string;
 }

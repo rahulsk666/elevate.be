@@ -1,4 +1,4 @@
-export function deleteCouseQuery(id: string): {
+export function deleteCourseQuery(id: string): {
   query: string;
   values: unknown[];
 } {

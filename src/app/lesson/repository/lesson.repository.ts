@@ -12,13 +12,17 @@ import {
 import { UpdateLessonRecord } from '../types/update-lesson-record.ts';
 import { deleteLessonQuery } from '../query/deleteLessonQuery';
 import { updateLessonQuery } from '../query/updateLessonQuery';
+import { PoolClient } from 'pg';
 
 @Injectable()
 export class lessonPgRepository implements lessonRepository {
   constructor(private readonly db: DatabaseService) {}
-  async create(lesson: CreateLessonRecord): Promise<Lesson> {
+  async create(
+    lesson: CreateLessonRecord,
+    client: PoolClient,
+  ): Promise<Lesson> {
     const { query, values } = createLessonQuery(lesson);
-    const result = await this.db.runQuery(query, values);
+    const result = await this.db.runQuery(query, values, client);
     return result.rows[0] as Lesson;
   }
   async findAll(): Promise<Lesson[]> {

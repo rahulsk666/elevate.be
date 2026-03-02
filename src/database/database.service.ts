@@ -10,7 +10,18 @@ export class DatabaseService {
     @Inject(databaseConfig.KEY)
     private readonly dbConfig: ConfigType<typeof databaseConfig>,
   ) {
-    this.pool = new Pool({ connectionString: dbConfig.dbUrl });
+    this.pool = new Pool({
+      connectionString: dbConfig.dbUrl,
+      ssl:
+        process.env.NODE_ENV === 'production'
+          ? { rejectUnauthorized: false }
+          : false,
+    });
+
+    this.pool.on('error', (err) => {
+      console.error('Unexpected error on idle client', err);
+      process.exit(-1);
+    });
   }
 
   getPool() {
@@ -20,7 +31,11 @@ export class DatabaseService {
   async runQuery<T extends QueryResultRow = any>(
     query: string,
     params?: unknown[],
+    client?: PoolClient,
   ): Promise<QueryResult<T>> {
+    if (client) {
+      return client.query<T>(query, params);
+    }
     return this.pool.query<T>(query, params);
   }
 

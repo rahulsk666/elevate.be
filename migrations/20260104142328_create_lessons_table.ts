@@ -9,12 +9,14 @@ export async function up(knex: Knex): Promise<void> {
       url TEXT,
       description TEXT,
       created_by UUID REFERENCES users(id),
-      lesson_type TEXT NOT NULL DEFAULT 'link',
+      lesson_type TEXT NOT NULL DEFAULT 'link'
+        CHECK (lesson_type IN ('link','video','pdf','note','repo')),
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), 
-      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
     `);
 }
 
 export async function down(knex: Knex): Promise<void> {
-  await knex.raw('DROP TABLE roadmap IF EXISTS');
+  await knex.raw('DROP TABLE IF EXISTS lessons');
 }

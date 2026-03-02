@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { courseRepository } from './course.interface.repository';
+import { CourseRepository } from './course.interface.repository';
 import { DatabaseService } from 'src/database/database.service';
 import { Course } from '../entities/course.entity';
 import { CreateCourseRecord } from '../types/create-course-record.types';
@@ -10,11 +10,11 @@ import {
   selectCourseByTitleQuery,
 } from '../query/findCourseQuery';
 import { updateCourseQuery } from '../query/updateCourseQuery';
-import { deleteCouseQuery } from '../query/deleteCourseQuery';
+import { deleteCourseQuery } from '../query/deleteCourseQuery';
 import { UpdateCourseRecord } from '../types/update-course-record.types';
 
 @Injectable()
-export class CoursePgRepository implements courseRepository {
+export class CoursePgRepository implements CourseRepository {
   constructor(private readonly db: DatabaseService) {}
   async create(course: CreateCourseRecord): Promise<Course> {
     const { query, values } = createCourseQuery(course);
@@ -41,8 +41,8 @@ export class CoursePgRepository implements courseRepository {
   }
 
   async findById(id: string): Promise<Course | null> {
-    const query = selectCourseByIdQuery(id);
-    const result = await this.db.runQuery(query);
+    const { query, values } = selectCourseByIdQuery(id);
+    const result = await this.db.runQuery(query, values);
     return result.rows[0] as Course;
   }
 
@@ -53,7 +53,7 @@ export class CoursePgRepository implements courseRepository {
   }
 
   async delete(id: string): Promise<boolean> {
-    const { query, values } = deleteCouseQuery(id);
+    const { query, values } = deleteCourseQuery(id);
     const result = await this.db.runQuery(query, values);
     return result.rowCount === 1;
   }

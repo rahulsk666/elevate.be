@@ -1,4 +1,10 @@
-import { IsIn, IsOptional, IsString } from 'class-validator';
+import {
+  IsIn,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 import type { roadmapStatus } from '../types/roadmap-status.types';
 
 export class CreateRoadmapDto {
@@ -17,4 +23,8 @@ export class CreateRoadmapDto {
   @IsIn(['draft', 'published', 'archived'])
   @IsOptional()
   roadmapStatus: roadmapStatus = 'draft';
+
+  @IsUUID()
+  @IsNotEmpty()
+  course_id: string;
 }

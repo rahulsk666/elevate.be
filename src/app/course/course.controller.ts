@@ -27,14 +27,9 @@ export class CourseController {
   }
 
   @Get('search')
-  findByTitle(@Query('title') query: FindCourseTitleDto) {
+  findByTitle(@Query() query: FindCourseTitleDto) {
     return this.courseService.findByTitle(query.title);
   }
-
-  // @Get()
-  // findByCondition(@Query() condition: FindParamDto) {
-  //   return this.courseService.findByCondition(condition);
-  // }
 
   @Get()
   findAll() {
@@ -48,16 +43,16 @@ export class CourseController {
 
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param() param: IdParamDto,
     @Body() updateCourseDto: UpdateCourseDto,
     @User('id') userId: string,
   ) {
-    return this.courseService.update(id, updateCourseDto, userId);
+    return this.courseService.update(param.id, updateCourseDto, userId);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id') id: string, @User('id') userID: string) {
-    return this.courseService.delete(id, userID);
+  remove(@Param() param: IdParamDto, @User('id') userId: string) {
+    return this.courseService.delete(param.id, userId);
   }
 }

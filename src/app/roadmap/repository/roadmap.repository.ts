@@ -12,13 +12,17 @@ import {
 import { updateRoadmapQuery } from '../query/updateRoadmapQuery';
 import { UpdateRoadmapRecord } from '../types/update-roadmap-record.types';
 import { deleteRoadmapQuery } from '../query/deleteRoadmapQuery';
+import { PoolClient } from 'pg';
 
 @Injectable()
 export class roadmapPgRepository implements roadmapRepository {
   constructor(private readonly db: DatabaseService) {}
-  async create(roadmap: CreateRoadmapRecord): Promise<Roadmap> {
+  async create(
+    roadmap: CreateRoadmapRecord,
+    client: PoolClient,
+  ): Promise<Roadmap> {
     const { query, values } = createRoadmapQuery(roadmap);
-    const result = await this.db.runQuery(query, values);
+    const result = await this.db.runQuery(query, values, client);
     return result.rows[0] as Roadmap;
   }
 

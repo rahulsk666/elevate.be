@@ -42,7 +42,10 @@ export function selectCourseByConditionQuery(
   return { query, values };
 }
 
-export function selectCourseByIdQuery(id: string): string {
+export function selectCourseByIdQuery(id: string): {
+  query: string;
+  values: unknown[];
+} {
   const query = `
     SELECT id,
     title,
@@ -54,9 +57,10 @@ export function selectCourseByIdQuery(id: string): string {
     created_at AS "createdAt",
     updated_at AS "updatedAt"
     FROM courses
-    WHERE id = ${id};
+    WHERE id = $1;
   `;
-  return query;
+  const values = [id];
+  return { query, values };
 }
 
 export function selectCourseByTitleQuery(title: string): {

@@ -1,21 +1,44 @@
 import {
   ForbiddenException,
+  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { roadmapPgRepository } from './repository/roadmap.repository';
 import { CreateRoadmapDto } from './dto/create-roadmap.dto';
 import { UpdateRoadmapDto } from './dto/update-roadmap.dto';
+import {
+  ROADMAP_REPOSITOTY,
+  type roadmapRepository,
+} from './repository/roadmap.interface.repository';
+import {
+  COURSE_ROADMAP_REPOSITOTY,
+  type courseRoadmapRepository,
+} from './repository/course_roadmap.interface.repository';
+import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class RoadmapService {
-  constructor(private readonly roadmapRepo: roadmapPgRepository) {}
+  constructor(
+    @Inject(ROADMAP_REPOSITOTY)
+    private readonly roadmapRepo: roadmapRepository,
+    @Inject(COURSE_ROADMAP_REPOSITOTY)
+    private readonly courseRoadmapRepo: courseRoadmapRepository,
+    private readonly db: DatabaseService,
+  ) {}
   async create(createRoadmapDto: CreateRoadmapDto, userId: string) {
-    return await this.roadmapRepo.create({
-      ...createRoadmapDto,
-      createdBy: userId,
-      roadmapStatus: createRoadmapDto.roadmapStatus ?? 'draft',
+    const { course_id, ...roadmapData } = createRoadmapDto;
+    return await this.db.runInTransaction(async (client) => {
+      const roadmap = await this.roadmapRepo.create(
+        {
+          ...roadmapData,
+          createdBy: userId,
+          roadmapStatus: roadmapData.roadmapStatus ?? 'draft',
+        },
+        client,
+      );
+      await this.courseRoadmapRepo.link(course_id, roadmap.id, client);
+      return roadmap;
     });
   }
 
