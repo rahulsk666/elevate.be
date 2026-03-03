@@ -10,6 +10,7 @@ export interface roadmapRepository {
   findAll(): Promise<Roadmap[]>;
   findByTitle(title: string): Promise<Roadmap[]>;
   findById(id: string): Promise<Roadmap | null>;
+  findByCourse(course_id: string): Promise<Roadmap[]>;
   update(id: string, roadmap: UpdateRoadmapRecord): Promise<Roadmap>;
   delete(id: string): Promise<boolean>;
 }

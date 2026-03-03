@@ -54,6 +54,10 @@ export class RoadmapService {
     return roadmap;
   }
 
+  async findByCourse(course_id: string) {
+    return await this.roadmapRepo.findByCourse(course_id);
+  }
+
   async findByTitle(title: string) {
     return await this.roadmapRepo.findByTitle(title);
   }

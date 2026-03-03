@@ -52,6 +52,10 @@ export class LessonService {
     }
   }
 
+  async findByRoadmap(roadmap_id: string) {
+    return await this.lessonRepo.findByRoadmap(roadmap_id);
+  }
+
   async findByTitle(title: string) {
     return await this.lessonRepo.findByTitle(title);
   }

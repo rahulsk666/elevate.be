@@ -6,6 +6,7 @@ import { DatabaseService } from 'src/database/database.service';
 import { CreateRoadmapRecord } from '../types/create-roadmap-record.types';
 import {
   selectAllRoadmap,
+  selectRoadmapByCourseId,
   selectRoadmapById,
   selectRoadmapByTitle,
 } from '../query/findRoadmapQuery';
@@ -42,6 +43,12 @@ export class roadmapPgRepository implements roadmapRepository {
     const { query, values } = selectRoadmapById(id);
     const result = await this.db.runQuery(query, values);
     return result.rows[0] as Roadmap;
+  }
+
+  async findByCourse(course_id: string): Promise<Roadmap[]> {
+    const { query, values } = selectRoadmapByCourseId(course_id);
+    const result = await this.db.runQuery(query, values);
+    return result.rows as Roadmap[];
   }
 
   async update(id: string, roadmap: UpdateRoadmapRecord): Promise<Roadmap> {

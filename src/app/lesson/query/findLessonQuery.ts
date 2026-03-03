@@ -53,3 +53,26 @@ export function selectLessonByTitle(title: string): {
   const values = [titleString];
   return { query, values };
 }
+
+export function selectLessonByRoadmap(roadmap_id: string): {
+  query: string;
+  values: unknown[];
+} {
+  const query = `
+  SELECT 
+    l.id,
+    l.title,
+    l.description, 
+    l.url,
+    l.lesson_type AS "lessonType",
+    l.created_by AS "createdBy",
+    l.created_at AS "createdAt",
+    l.updated_at AS "updatedAt"
+    FROM roadmap_lesson rl
+    INNER JOIN lessons l ON l.id = rl.lesson_id
+    WHERE rl.roadmap_id = $1
+    ORDER BY rl.lesson_order ASC;
+    `;
+  const values = [roadmap_id];
+  return { query, values };
+}

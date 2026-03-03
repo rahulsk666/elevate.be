@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   HttpCode,
-  Inject,
   Param,
   Patch,
   Post,
@@ -41,6 +40,11 @@ export class RoadmapController {
   @Get(':id')
   findOne(@Param() param: FindRoadmapIdDto) {
     return this.roadmapService.findById(param.id);
+  }
+
+  @Get('course/:id')
+  findByCourse(@Param() param: FindRoadmapIdDto) {
+    return this.roadmapService.findByCourse(param.id);
   }
 
   @Patch(':id')

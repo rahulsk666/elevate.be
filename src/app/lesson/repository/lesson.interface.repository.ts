@@ -10,6 +10,7 @@ export interface lessonRepository {
   findAll(): Promise<Lesson[]>;
   findByTitle(title: string): Promise<Lesson[]>;
   findById(id: string): Promise<Lesson | null>;
+  findByRoadmap(roadmap_id: string): Promise<Lesson[]>;
   update(id: string, lesson: UpdateLessonRecord): Promise<Lesson>;
   delete(id: string): Promise<boolean>;
 }

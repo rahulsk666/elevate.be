@@ -7,6 +7,7 @@ import { DatabaseService } from 'src/database/database.service';
 import {
   selectAllLessons,
   selectLessonById,
+  selectLessonByRoadmap,
   selectLessonByTitle,
 } from '../query/findLessonQuery';
 import { UpdateLessonRecord } from '../types/update-lesson-record.ts';
@@ -17,6 +18,7 @@ import { PoolClient } from 'pg';
 @Injectable()
 export class lessonPgRepository implements lessonRepository {
   constructor(private readonly db: DatabaseService) {}
+
   async create(
     lesson: CreateLessonRecord,
     client: PoolClient,
@@ -25,26 +27,37 @@ export class lessonPgRepository implements lessonRepository {
     const result = await this.db.runQuery(query, values, client);
     return result.rows[0] as Lesson;
   }
+
   async findAll(): Promise<Lesson[]> {
     const query = selectAllLessons();
     const result = await this.db.runQuery(query);
     return result.rows as Lesson[];
   }
+
   async findByTitle(title: string): Promise<Lesson[]> {
     const { query, values } = selectLessonByTitle(title);
     const result = await this.db.runQuery(query, values);
     return result.rows as Lesson[];
   }
+
   async findById(id: string): Promise<Lesson | null> {
     const { query, values } = selectLessonById(id);
     const result = await this.db.runQuery(query, values);
     return result.rows[0] as Lesson;
   }
+
+  async findByRoadmap(roadmap_id: string): Promise<Lesson[]> {
+    const { query, values } = selectLessonByRoadmap(roadmap_id);
+    const result = await this.db.runQuery(query, values);
+    return result.rows as Lesson[];
+  }
+
   async update(id: string, lesson: UpdateLessonRecord): Promise<Lesson> {
     const { query, values } = updateLessonQuery(id, lesson);
     const result = await this.db.runQuery(query, values);
     return result.rows[0] as Lesson;
   }
+
   async delete(id: string): Promise<boolean> {
     const { query, values } = deleteLessonQuery(id);
     const result = await this.db.runQuery(query, values);

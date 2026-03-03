@@ -39,6 +39,11 @@ export class LessonController {
     return this.lessonService.findById(param.id);
   }
 
+  @Get('roadmap/:id')
+  findByRoadmap(@Param() param: FindLessonIdDto) {
+    return this.lessonService.findByRoadmap(param.id);
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,
